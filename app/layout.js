@@ -8,7 +8,7 @@ export const metadata = {
   description: "Written with next.js and tailwind css",
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children, quiz }) {
   return (
     <html lang="en">
       <body className={`${inter.className} min-h-screen`}>{children}</body>
