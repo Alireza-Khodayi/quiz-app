@@ -5,6 +5,7 @@ const defaultConfig = {
   category: { id: 0, name: "" },
   type: "",
   status: "",
+  level: "",
   score: 0,
 };
 const useQuiz = create((set) => ({
