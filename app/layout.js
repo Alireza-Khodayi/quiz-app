@@ -1,17 +1,12 @@
+"use client";
 import "./globals.css";
-import { Inter } from "next/font/google";
-
-const inter = Inter({ subsets: ["latin"] });
-
-export const metadata = {
-  title: "Trivia Quiz App",
-  description: "Written with next.js and tailwind css",
-};
-
+import useQuiz from "./store/store";
 export default function RootLayout({ children, quiz }) {
+  const quizConfig = useQuiz((state) => state.config);
+  let render = quizConfig.status ? quiz : children;
   return (
     <html lang="en">
-      <body className={`${inter.className} min-h-screen`}>{children}</body>
+      <body>{render}</body>
     </html>
   );
 }
