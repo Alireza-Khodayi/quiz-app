@@ -30,6 +30,8 @@ const useQuiz = create((set) => ({
       config: { ...state.config, score: state.config.score + 1 },
     })),
 
+  resetScore: () => set((state) => ({ config: { ...state.config, score: 0 } })),
+
   addType: (type) =>
     set((state) => ({ config: { ...state.config, type: type } })),
 }));

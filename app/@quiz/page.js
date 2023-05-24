@@ -2,6 +2,8 @@
 import Container from "@/components/UI/Container";
 import useQuiz from "@app/store/store";
 import Loading from "@components/UI/Loading";
+import { Player } from "@lottiefiles/react-lottie-player";
+
 import { useEffect, useState } from "react";
 const Quiz = () => {
   const [questions, setQuestions] = useState([]);
@@ -10,6 +12,8 @@ const Quiz = () => {
 
   const quizConfig = useQuiz((state) => state.config);
   const addScore = useQuiz((state) => state.addScore);
+  const addStatus = useQuiz((state) => state.addStatus);
+  const resetScore = useQuiz((state) => state.resetScore);
 
   useEffect(() => {
     const getQuestions = async () => {
@@ -56,20 +60,42 @@ const Quiz = () => {
           <Loading />
         </section>
       ) : (
-        <section className="p-10 shadow-xl container mx-auto bg-base-100 dark:bg-gray-800">
-          <h1 className="mb-4 text-xl font-extrabold leading-none tracking-tight text-gray-900 md:text-2xl lg:text-3xl dark:text-white">
-            Question Number :
-            {questions?.length ? (
-              <span className="text-yellow-400 dark:text-yellow-400">
-                {" "}
-                #{quizConfig.numberOfQuestions - questions?.length + 1}
+        <section className="p-10 shadow-xl container mx-auto bg-base-100 dark:bg-gray-800 min-h-[70vh] flex flex-col justify-between">
+          {!loading && !questions.length && (
+            <div className="flex flex-col justify-center items-center gap-7">
+              <Player
+                src="https://assets1.lottiefiles.com/packages/lf20_myejiggj.json"
+                className="player"
+                loop
+                autoplay
+                style={{ height: "300px", width: "300px" }}
+              />
+              <h3 className="font-extrabold text-2xl text-gray-800">
+                Congratulations! Your Quiz Score is {quizConfig.score}
+              </h3>
+              <button
+                onClick={() => {
+                  resetScore();
+                  addStatus(false);
+                }}
+                className="btn"
+              >
+                Start new Quiz!
+              </button>
+            </div>
+          )}
+          {questions?.length ? (
+            <h1 className="mb-4 text-xl font-extrabold leading-none tracking-tight text-gray-600 md:text-2xl lg:text-3xl dark:text-white">
+              Question Number :
+              <span className="text-gray-900 dark:text-yellow-400">
+                &nbsp; # {quizConfig.numberOfQuestions - questions?.length + 1}
               </span>
-            ) : (
-              ""
-            )}
-          </h1>
+            </h1>
+          ) : (
+            ""
+          )}
           {!loading && !!questions.length && (
-            <p>Your Score : {quizConfig.score}</p>
+            <p className="font-bold italic">Your Score : {quizConfig.score}</p>
           )}
           <div>
             <h4 className="my-10 text-2xl font-bold text-center leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl dark:text-white">
