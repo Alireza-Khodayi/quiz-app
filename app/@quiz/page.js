@@ -9,7 +9,7 @@ const Quiz = () => {
   const [loading, setLoading] = useState(false);
 
   const quizConfig = useQuiz((state) => state.config);
-  const setScore = useQuiz((state) => state.setScore);
+  const addScore = useQuiz((state) => state.addScore);
 
   useEffect(() => {
     const getQuestions = async () => {
@@ -35,37 +35,72 @@ const Quiz = () => {
     };
     getQuestions();
   }, []);
-  console.log(quizConfig);
+
+  const handleNext = () => {
+    let remainingQuestions = [...questions];
+    remainingQuestions.shift();
+    setQuestions([...remainingQuestions]);
+    setAnswer("");
+  };
+
+  const checkAnswer = (ans) => {
+    if (ans === questions[0].correct_answer) {
+      addScore(0);
+    }
+    setAnswer(questions[0].correct_answer);
+  };
   return (
     <Container>
       {loading ? (
-        <section className="p-10 shadow-xl container mx-auto bg-base-100 dark:bg-gray-800 flex items-center justify-center h-[50vh]">
+        <section className="p-10 shadow-xl container mx-auto bg-base-100 dark:bg-gray-800 flex items-center justify-center h-screen">
           <Loading />
         </section>
       ) : (
         <section className="p-10 shadow-xl container mx-auto bg-base-100 dark:bg-gray-800">
           <h1 className="mb-4 text-xl font-extrabold leading-none tracking-tight text-gray-900 md:text-2xl lg:text-3xl dark:text-white">
             Question Number :
-            <span className="text-yellow-400 dark:text-yellow-400"> #1 </span>
+            {questions?.length ? (
+              <span className="text-yellow-400 dark:text-yellow-400">
+                {" "}
+                #{quizConfig.numberOfQuestions - questions?.length + 1}
+              </span>
+            ) : (
+              ""
+            )}
           </h1>
-          <p>Your Score : 0</p>
+          {!loading && !!questions.length && (
+            <p>Your Score : {quizConfig.score}</p>
+          )}
           <div>
             <h4 className="my-10 text-2xl font-bold text-center leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl dark:text-white">
-              {questions.length ? questions[0].question : null}
+              {questions.length ? questions[0].question : ""}
             </h4>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {questions.length
-              ? questions[0].answer.map((answer) => (
-                  <button key={answer} className="btn btn-outline col-span-1">
-                    {answer}
+              ? questions[0].answer.map((ans) => (
+                  <button
+                    disabled={answer}
+                    onClick={() => checkAnswer(ans)}
+                    key={ans}
+                    className={`btn ${!answer && "btn-outline"} col-span-1 ${
+                      answer && ans === answer ? "disabled:btn-success" : ""
+                    }${answer && ans !== answer ? "disabled:btn-warning" : ""}`}
+                  >
+                    {ans}
                   </button>
                 ))
-              : null}
+              : ""}
           </div>
-          <div className="flex justify-end">
-            <button className="btn mt-10">Next</button>
-          </div>
+          {questions.length ? (
+            <div className="flex justify-end">
+              <button onClick={handleNext} className="btn mt-10">
+                Next
+              </button>
+            </div>
+          ) : (
+            ""
+          )}
         </section>
       )}
     </Container>
